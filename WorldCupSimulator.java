@@ -8,12 +8,13 @@ public class WorldCupSimulator {
 		Tournament worldCup2026 = new Tournament();
 		
 		worldCup2026.addTeams();
-		worldCup2026.printTeams();
+//		worldCup2026.printTeams();
 
 		worldCup2026.addteamsInGroups();
-		worldCup2026.printGroups();
+//		worldCup2026.printGroups();
 		
 		worldCup2026.simulateGroups();
+		worldCup2026.printGroupsFull();
 		
 		worldCup2026.formKnockouts();
 		

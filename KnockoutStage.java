@@ -14,6 +14,10 @@ public class KnockoutStage {
 	Group[] groups;
 	Utility utility;
 	
+	KnockoutMatch[] roundOf32Matches, roundOf16Matches, quarterFinalMatches, semiFinalMatches, thirdPlaceMatch, firstPlaceMatch;
+	
+	KnockoutRound roundOf32, roundOf16, quarterFinals, semiFinals, thirdPlace, firstPlace;
+	
 	int groupsNum;
 	
 	public KnockoutStage(Group[] groups, int groupsNum, TournamentPrinter tournamentPrinting, Utility utility) {
@@ -41,6 +45,40 @@ public class KnockoutStage {
 		generateRoundOf32Matches(bestThirdPlaceStandings);
 	}
 	
+	public void simulateKnockouts() {
+		
+		roundOf32 = new KnockoutRound(KnockoutPhase.R32, roundOf32Matches);
+		roundOf32.playKnockoutRoundMatches();
+		roundOf32.printKnockoutRoundMatches();
+		
+		roundOf16Matches = roundOf32.getNextRoundMatches();
+		roundOf16 = new KnockoutRound(KnockoutPhase.R16, roundOf16Matches);
+		roundOf16.playKnockoutRoundMatches();
+		roundOf16.printKnockoutRoundMatches();
+		
+		quarterFinalMatches = roundOf16.getNextRoundMatches();
+		quarterFinals = new KnockoutRound(KnockoutPhase.QF, quarterFinalMatches);
+		quarterFinals.playKnockoutRoundMatches();
+		quarterFinals.printKnockoutRoundMatches();
+		
+		semiFinalMatches = quarterFinals.getNextRoundMatches();
+		semiFinals = new KnockoutRound(KnockoutPhase.SF, semiFinalMatches);
+		semiFinals.playKnockoutRoundMatches();
+		semiFinals.printKnockoutRoundMatches();
+		
+		thirdPlaceMatch = semiFinals.getLosersMatches();
+		thirdPlace = new KnockoutRound(KnockoutPhase.THIRDPLACE, thirdPlaceMatch);
+		thirdPlace.playKnockoutRoundMatches();
+		thirdPlace.printKnockoutRoundMatches();
+	
+		firstPlaceMatch = semiFinals.getNextRoundMatches();
+		firstPlace = new KnockoutRound(KnockoutPhase.FINAL , firstPlaceMatch);
+		firstPlace.playKnockoutRoundMatches();
+		firstPlace.printKnockoutRoundMatches();
+
+	}
+	
+	
 	GroupStanding[] getBestThirdPlaceTeams() {
 		
 		// add them in an array of Teams //
@@ -51,7 +89,7 @@ public class KnockoutStage {
 			thirdPlaceStandings[i] = groups[i].groupStandings[2];
 		}
 		
-		printThirdPlaceTeams(thirdPlaceStandings);
+//		printThirdPlaceTeams(thirdPlaceStandings);
 		
 		sortThirdPlaceTeams(thirdPlaceStandings);
 		
@@ -59,8 +97,7 @@ public class KnockoutStage {
 		for (int i = 0; i < 8; i++) {
 			bestThirdPlaceStandings[i] = thirdPlaceStandings[i];
 		}
-		
-		System.out.println();
+
 		tournamentPrinting.printBestThirdPlaceTeams(bestThirdPlaceStandings);
 		
 		return thirdPlaceStandings;
@@ -95,7 +132,7 @@ public class KnockoutStage {
 		// do not meet in R32 and in R16 //
 		Team[] bestThirdPlaceTeams = getValidThirdPlaceTeamSequence(bestThirdPlaceStandings);
 		
-		KnockoutMatch[] roundOf32Matches = new KnockoutMatch[16];
+		roundOf32Matches = new KnockoutMatch[16];
 
 		roundOf32Matches[0] = new KnockoutMatch(groups[4].groupStandings[0].getTeam(), bestThirdPlaceTeams[0]); // 1E vs 3i //
 		roundOf32Matches[1] = new KnockoutMatch(groups[8].groupStandings[0].getTeam(), bestThirdPlaceTeams[1]); // 1I vs 3ii //
@@ -113,8 +150,6 @@ public class KnockoutStage {
 		roundOf32Matches[13] = new KnockoutMatch(groups[3].groupStandings[1].getTeam(), groups[6].groupStandings[1].getTeam()); // 2D vs 2G //
 		roundOf32Matches[14] = new KnockoutMatch(groups[1].groupStandings[0].getTeam(), bestThirdPlaceTeams[6]); // 1B vs 3vii //
 		roundOf32Matches[15] = new KnockoutMatch(groups[10].groupStandings[0].getTeam(), bestThirdPlaceTeams[7]); // 1K vs 3viii //
-		
-		tournamentPrinting.printRoundOf32Matches(roundOf32Matches);
 
 	}
 	
@@ -129,34 +164,37 @@ public class KnockoutStage {
 		do {
 			Collections.shuffle(bestThirdPlaceGroupIndices);
 			
-			System.out.print("\nFailed Sequence: ");
-			
-			for (int i = 0; i < 8; i++) {
-				System.out.printf("%c ", bestThirdPlaceGroupIndices.get(i));
-			}
+			// debug: print failed sequences //
+//			
+//			System.out.print("\nFailed Sequence: ");
+//			
+//			for (int i = 0; i < 8; i++) {
+//				System.out.printf("%c ", bestThirdPlaceGroupIndices.get(i));
+//			}
 		}
 		while (utility.checkValidThirdPlaceTeamSequence(bestThirdPlaceGroupIndices) == false);
 		
-		System.out.print("\nThe valid sequence is: ");
-		
-		for (int i = 0; i < 8; i++) {
-			System.out.printf("%c ", bestThirdPlaceGroupIndices.get(i));
-		}
+//		System.out.print("\nThe valid sequence is: ");
+//		
+//		for (int i = 0; i < 8; i++) {
+//			System.out.printf("%c ", bestThirdPlaceGroupIndices.get(i));
+//		}
 		
 		Team[] bestThirdPlaceTeams = new Team[8];
 		int groupIndex;
 		
-		System.out.println("Third Place Teams: ");
-		System.out.println();
+//		System.out.println("Third Place Teams: ");
+//		System.out.println();
 		
 		for (int i = 0; i < 8; i++) {
 			groupIndex = utility.getGroupIntegerFromGroupChar(bestThirdPlaceGroupIndices.get(i));
 			bestThirdPlaceTeams[i] = groups[groupIndex].groupStandings[2].getTeam();
 			
-			System.out.printf("%d: %s\n", (i+1), bestThirdPlaceTeams[i].getName());
+//			System.out.printf("%d: %s\n", (i+1), bestThirdPlaceTeams[i].getName());
 		}
 		
 		return bestThirdPlaceTeams;
 			
 	}
+	
 }

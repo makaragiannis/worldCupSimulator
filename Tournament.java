@@ -127,11 +127,9 @@ public class Tournament {
 	void simulateGroup(Group group) {
 		
 		group.playGroupMatches();
-		group.printGroupMatches();
-		
+
 		group.sortTeams();
 		
-		group.printTable();
 	}	
 	
 	
@@ -143,9 +141,14 @@ public class Tournament {
 	public void printGroups() {
 		tournamentPrinting.printGroups(groups, groupsNum);
 	}
+
+	public void printGroupsFull() {
+		tournamentPrinting.printGroupMatches(groups, groupsNum);
+		tournamentPrinting.printGroupTables(groups, groupsNum);
+	}
 	
 	public void simulateKnockouts() {
-		
+		knockoutStage.simulateKnockouts();
 	}
 	
 	public void formKnockouts() {

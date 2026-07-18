@@ -44,6 +44,11 @@ public abstract class Match {
 
 	}
 	
+	protected GameResult getFTResult() {
+		
+		return FTResult;
+	}
+	
 	protected void setMatchScore(int homeGoals, int awayGoals) {
 		homeTeamFTScore = homeGoals;
 		awayTeamFTScore = awayGoals;
@@ -82,8 +87,9 @@ public abstract class Match {
 	}
 	
 	public void printMatchFT() {
-		System.out.printf("%25s %2d - %2d %s\n", homeTeam.getName(), homeTeamFTScore, awayTeamFTScore, awayTeam.getName());
+		System.out.printf("%25s %d - %d %s\n", homeTeam.getName(), homeTeamFTScore, awayTeamFTScore, awayTeam.getName());
 	}
+
 
 
 }

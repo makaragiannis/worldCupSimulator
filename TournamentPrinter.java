@@ -23,6 +23,22 @@ public class TournamentPrinter {
 		}
 	}
 	
+	// print group standings//
+	public void printGroupTables(Group[] groups, int groupsNum) {
+		
+		for (int i = 0; i < groupsNum; i++) {
+			groups[i].printTable();
+		}
+	}
+	
+	// print all group games //
+	public void printGroupMatches(Group[] groups, int groupsNum) {
+		
+		for (int i = 0; i < groupsNum; i++) {
+			groups[i].printGroupMatches();
+		}
+	}
+	
 	public void printBestThirdPlaceTeams(GroupStanding[] thirdPlaceStandings) {
 		
 		GroupStanding tempStanding;
